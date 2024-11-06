@@ -16,10 +16,18 @@ export const viewport: Viewport = {
   width: "device-width",
 };
 
+export async function generateStaticParams() {
+  const res = await axios.get(`https://jsonplaceholder.typicode.com/users`);
+ 
+  return res.data.map((user: User) => ({
+    slug: String(user.id),
+  }));
+}
+
 export default async function UserPage({
   params,
 }: {
-  params: Promise<{ slug: number }>;
+  params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
 

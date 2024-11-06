@@ -32,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`antialiased absolute h-full w-full`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased absolute h-full w-full`}
       >
         <div className="p-8 w-full h-full bg-gradient-to-br from-slate-50 via-rose-50 via-85% to-rose-100">{children}</div>
       </body>

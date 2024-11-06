@@ -8,7 +8,6 @@ import Header from "@/components/Header";
 
 import TableSearch from "./TableSearch";
 import TablePagination from "./TablePagination";
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 const TABLE_HEAD = ["ID", "Name", "Email", "Phone", "Address"];
 const itemsPerPage = 8;
@@ -45,7 +44,8 @@ export default function Table() {
         }));
         setUsers(transformedUsers as User[]);
         setCurrentPage(1);
-      } catch (err) {
+      } catch (e) {
+        console.log(e);
         setIsError(true);
       }
       setIsLoading(false);
