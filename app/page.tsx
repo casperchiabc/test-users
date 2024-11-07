@@ -1,5 +1,6 @@
 import Table from "../components/Table";
 import User from "@/models/User";
+import Header from "@/components/Header";
 
 export default async function Home() {
   const res = await fetch(`https://jsonplaceholder.typicode.com/users`, {
@@ -26,6 +27,9 @@ export default async function Home() {
   }));
     
   return (
-    <Table users={transformedUsers} />
+    <div className="p-3 sm:p-8">
+      <Header>User List</Header>
+      <Table users={transformedUsers} />
+    </div>
   );
 }

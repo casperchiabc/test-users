@@ -3,6 +3,7 @@ import Link from "next/link";
 import User from "@/models/User.jsx";
 import { FaAngleLeft } from "react-icons/fa6";
 import Header from "@/components/Header";
+import UserDtDd from "@/components/UserDtDd";
 
 export const metadata: Metadata = {
   title: "User Details",
@@ -37,10 +38,7 @@ export default async function UserPage({
   });
   const user = await res.json() as User;
 
-  const dlDivClasses = "py-3 sm:py-[18px] sm:flex w-full sm:gap-4 sm:px-6";
-  const dtClasses = "text-sm font-medium text-gray-500 sm:w-1/4 max-w-80";
-  const ddClasses = "mt-1 text-sm text-gray-900 flex-grow sm:mt-0 sm:col-span-2 ";
-
+  
   return (
     <div className="p-3 sm:p-8">
       <Header>User Details</Header>
@@ -59,38 +57,12 @@ export default async function UserPage({
         </div>
         <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
           <dl className="sm:divide-y sm:divide-gray-200">
-            <div className={dlDivClasses}>
-              <dt className={dtClasses}>ID</dt>
-              <dd className={ddClasses}>{user?.id}</dd>
-            </div>
-            <div className={dlDivClasses}>
-              <dt className={dtClasses}>Full Name</dt>
-              <dd className={ddClasses}>{user?.name}</dd>
-            </div>
-            <div className={dlDivClasses}>
-              <dt className={dtClasses}>Email address</dt>
-              <dd className={ddClasses}>{user?.email}</dd>
-            </div>
-            <div className={dlDivClasses}>
-              <dt className={dtClasses}>Phone number</dt>
-              <dd className={ddClasses}>{user?.phone}</dd>
-            </div>
-            <div className={dlDivClasses}>
-              <dt className={dtClasses}>Company</dt>
-              <dd className={ddClasses}>{user?.company.name}</dd>
-            </div>
-            <div className={dlDivClasses}>
-              <dt className={dtClasses}>Address</dt>
-              <dd className={ddClasses}>
-                {user?.address.suite}, {user?.address.street}, {user?.address.city}, {user?.address.zipcode}
-              </dd>
-            </div>
-            <div className={dlDivClasses}>
-              <dt className={dtClasses}>Latitude, Longitude</dt>
-              <dd className={ddClasses}>
-                {user?.address.geo.lat}, {user?.address.geo.lng}
-              </dd>
-            </div>
+            <UserDtDd label="Full Name">{user?.name}</UserDtDd>
+            <UserDtDd label="Email address">{user?.email}</UserDtDd>
+            <UserDtDd label="Phone number">{user?.phone}</UserDtDd>
+            <UserDtDd label="Company">{user?.company.name}</UserDtDd>
+            <UserDtDd label="Address">{`${user?.address.suite}, ${user?.address.street}, ${user?.address.city}, ${user?.address.zipcode}`}</UserDtDd>
+            <UserDtDd label="Latitude, Longitude">{`${user?.address.geo.lat}, ${user?.address.geo.lng}`}</UserDtDd>
           </dl>
         </div>
       </div>
