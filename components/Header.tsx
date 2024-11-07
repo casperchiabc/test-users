@@ -12,7 +12,7 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
 	      transition:{duration:0.2}
       }}
     >
-      <h1 className="text-3xl font-semibold p-6">{children}</h1>
+      <h1 className="text-3xl font-semibold p-3 sm:p-6">{children}</h1>
     </motion.div>
   );
 };

@@ -1,8 +1,6 @@
-import type { Metadata } from "next";
-import type { Viewport } from "next";
+import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import User from "@/models/User.jsx";
-import axios from "axios";
 import { FaAngleLeft } from "react-icons/fa6";
 import Header from "@/components/Header";
 
@@ -17,9 +15,12 @@ export const viewport: Viewport = {
 };
 
 export async function generateStaticParams() {
-  const res = await axios.get(`https://jsonplaceholder.typicode.com/users`);
+  const res = await fetch(`https://jsonplaceholder.typicode.com/users`, {
+    next: { revalidate: 3600 },
+  });
+  const data = await res.json();
  
-  return res.data.map((user: User) => ({
+  return data.map((user: User) => ({
     slug: String(user.id),
   }));
 }
@@ -31,23 +32,23 @@ export default async function UserPage({
 }) {
   const { slug } = await params;
 
-  const res = await axios.get(
-    `https://jsonplaceholder.typicode.com/users/${slug}`
-  );
-  const user = res.data as User;
+  const res = await fetch(`https://jsonplaceholder.typicode.com/users/${slug}`, {
+    next: { revalidate: 600 },
+  });
+  const user = await res.json() as User;
 
   const dlDivClasses = "py-3 sm:py-[18px] sm:flex w-full sm:gap-4 sm:px-6";
   const dtClasses = "text-sm font-medium text-gray-500 sm:w-1/4 max-w-80";
   const ddClasses = "mt-1 text-sm text-gray-900 flex-grow sm:mt-0 sm:col-span-2 ";
 
   return (
-    <>
+    <div className="p-3 sm:p-8">
       <Header>User Details</Header>
 
-      <div className="bg-white overflow-hidden shadow rounded-lg border">
+      <div className="bg-white overflow-hidden shadow rounded-lg border mb-6">
         <div className="px-4 py-5 sm:px-6 flex justify-between items-center h-[82px]">
           <h3 className="text-xl leading-6 font-semibold text-red-700">
-            Information of {user?.name}
+            <span className="hidden sm:inline">Information of </span>{user?.name}
           </h3>
           <button className="bg-red-700 py-2 px-5 rounded-lg transition ease-in-out duration-150 hover:bg-red-900">
             <Link href="/" className="flex items-center">
@@ -93,6 +94,6 @@ export default async function UserPage({
           </dl>
         </div>
       </div>
-    </>
+    </div>
   );
 }

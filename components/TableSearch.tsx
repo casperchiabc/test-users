@@ -8,7 +8,7 @@ export default function TableSearch({
   setSearchTerm: (term: string) => void;
 }) {
   return (
-    <div className="flex items-center w-1/2 max-w-[30rem]">
+    <div className="flex flex-grow items-center md:w-1/2 md:max-w-[30rem] sm:mr-4">
       <label htmlFor="search" className="sr-only">
         Search
       </label>

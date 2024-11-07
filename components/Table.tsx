@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import axios from "axios";
 import User from "@/models/User.jsx";
 import Header from "@/components/Header";
 
@@ -12,46 +11,10 @@ import TablePagination from "./TablePagination";
 const TABLE_HEAD = ["ID", "Name", "Email", "Phone", "Address"];
 const itemsPerPage = 8;
 
-export default function Table() {
-  const [users, setUsers] = useState<User[]>([]);
+export default function Table(props: {users: User[]}) {
+  const users = props.users;
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [currentPage, setCurrentPage] = useState<number>(0);
-  const [isError, setIsError] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  useEffect(() => {
-    async function getUsers() {
-      setIsLoading(true);
-
-      try {
-        const res = await axios.get(`https://jsonplaceholder.typicode.com/users`);
-        const transformedUsers = res.data.map((user: User) => ({
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          phone: user.phone,
-          company: { name: user.company.name },
-          address: {
-            street: user.address.street,
-            suite: user.address.suite,
-            city: user.address.city,
-            zipcode: user.address.zipcode,
-            geo: {
-              lat: user.address.geo.lat,
-              lng: user.address.geo.lng,
-            },
-          },
-        }));
-        setUsers(transformedUsers as User[]);
-        setCurrentPage(1);
-      } catch (e) {
-        console.log(e);
-        setIsError(true);
-      }
-      setIsLoading(false);
-    }
-    getUsers();
-  }, []);
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   const router = useRouter();
   const goToUserDetailsPage = (id: number) => router.push(`/users/${id}`);
@@ -67,11 +30,11 @@ export default function Table() {
   const handlePageChange = (newPage: number) => setCurrentPage(newPage);
 
   return (
-    <>
+    <div className="p-3 sm:p-8">
       <Header>User List</Header>
 
-      <div className="border shadow rounded-lg bg-white">
-        <div className="flex justify-between px-6 py-2 items-center">
+      <div className="border shadow rounded-lg bg-white mb-6">
+        <div className="flex flex-col-reverse sm:flex-row sm:justify-between px-3 sm:px-6 py-2 sm:items-center">
           <TableSearch searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
           <TablePagination currentPage={currentPage} totalPages={totalPages} handlePageChange={handlePageChange} />
         </div>
@@ -80,14 +43,13 @@ export default function Table() {
           <table className="w-full min-w-max table-fixed text-left ">
             <thead>
               <tr>
-                {TABLE_HEAD.map((head, index) => {
+                {TABLE_HEAD.map((head) => {
                   let classes =
                     "border-y border-blue-gray-100 bg-blue-gray-50/50 p-4";
-                  if (index === 0) classes += " pl-7 w-1/12";
-                  if (index === 1) classes += " ";
-                  if (index === 2) classes += " ";
-                  if (index === 3) classes += " w-1/6";
-                  if (index === 4) classes += " ";
+                  if (head === 'ID') classes += " pl-4 sm:pl-7 w-1/12";
+                  if (head === 'Email') classes += " hidden sm:table-cell";
+                  if (head === 'Phone') classes += " lg:w-1/6";
+                  if (head === 'Address') classes += " hidden lg:table-cell xl:w-1/3";
                   return (
                     <th key={head} className={classes}>
                       {head}
@@ -97,8 +59,6 @@ export default function Table() {
               </tr>
             </thead>
             <tbody>
-              {isError && <tr><td className="text-center py-10" colSpan={5}>Error loading data. Please try again later.</td></tr>}
-              {isLoading && <tr><td className="text-center py-10" colSpan={5}>Loading ...</td></tr>}
               {paginatedData.map((item, index) => {
                 const isLast = index === paginatedData.length - 1;
                 const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
@@ -108,11 +68,11 @@ export default function Table() {
                     className="transition ease-in-out duration-100 hover:bg-red-200 hover:cursor-pointer"
                     onClick={() => goToUserDetailsPage(item.id)}
                   >
-                    <td className={"pl-7 " + classes}>{item.id}</td>
+                    <td className={"pl-4 sm:pl-7 " + classes}>{item.id}</td>
                     <td className={classes}>{item.name}</td>
-                    <td className={"truncate " + classes}>{item.email}</td>
+                    <td className={"truncate hidden sm:table-cell " + classes}>{item.email}</td>
                     <td className={"truncate " + classes}>{item.phone}</td>
-                    <td className={"truncate " + classes}>
+                    <td className={"truncate hidden lg:table-cell " + classes}>
                       {item.address?.suite}, {item.address?.street}, {item.address.city}
                     </td>
                   </tr>
@@ -122,6 +82,6 @@ export default function Table() {
           </table>
         </div>
       </div>
-    </>
+    </div>
   );
 }
